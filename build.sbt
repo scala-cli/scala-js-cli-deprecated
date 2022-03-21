@@ -11,7 +11,6 @@ val cliPack =
   taskKey[File]("Pack the CLI for the current configuration")
 
 inThisBuild(Def.settings(
-  version := "1.1.1-SNAPSHOT",
   organization := "org.scala-js",
 
   crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.6"),
@@ -56,14 +55,6 @@ inThisBuild(Def.settings(
 ))
 
 val commonSettings = Def.settings(
-  publishMavenStyle := true,
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  },
   pomExtra := (
     <developers>
       <developer>
