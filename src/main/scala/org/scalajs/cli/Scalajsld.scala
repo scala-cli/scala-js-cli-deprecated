@@ -53,11 +53,17 @@ object Scalajsld {
   private implicit object MainMethodRead extends scopt.Read[ModuleInitializer] {
     val arity = 1
     val reads = { (s: String) =>
-      val lastDot = s.lastIndexOf('.')
+      val hasArgs = !s.endsWith("!")
+      val stripped = s.stripSuffix("!")
+      val lastDot = stripped.lastIndexOf('.')
       if (lastDot < 0)
         throw new IllegalArgumentException(s"$s is not a valid main method")
-      ModuleInitializer.mainMethodWithArgs(s.substring(0, lastDot),
-          s.substring(lastDot + 1))
+      val className = stripped.substring(0, lastDot)
+      val mainMethodName = stripped.substring(lastDot + 1)
+      if (hasArgs)
+        ModuleInitializer.mainMethodWithArgs(className, mainMethodName)
+      else
+        ModuleInitializer.mainMethod(className, mainMethodName)
     }
   }
 
