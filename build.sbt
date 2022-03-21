@@ -11,7 +11,8 @@ val cliPack =
   taskKey[File]("Pack the CLI for the current configuration")
 
 inThisBuild(Def.settings(
-  organization := "org.scala-js",
+  organization := "io.github.alexarchambault.tmp",
+  sonatypeCredentialHost := "s01.oss.sonatype.org",
 
   crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.6"),
   scalaVersion := crossScalaVersions.value.last,
@@ -75,6 +76,7 @@ val commonSettings = Def.settings(
     </developers>
   ),
   pomIncludeRepository := { _ => false },
+  sonatypeProfileName := "io.github.alexarchambault"
 )
 
 lazy val `scalajs-cli`: Project = project.in(file(".")).
@@ -96,7 +98,7 @@ lazy val `scalajs-cli`: Project = project.in(file(".")).
       val s = streams.value
       val log = s.log
 
-      val sjsOrg = organization.value
+      val sjsOrg = "org.scala-js"
       val scalaBinVer = scalaBinaryVersion.value
       val sjsVer = scalaJSVersion.value
 
