@@ -47,6 +47,7 @@ object Scalajsld {
       relativizeSourceMap: Option[URI] = None,
       checkIR: Boolean = false,
       stdLib: Option[File] = None,
+      jsHeader: String = "",
       logLevel: Level = Level.Info
   )
 
@@ -163,6 +164,9 @@ object Scalajsld {
         .text("Location of Scala.js standard libarary. This is set by the " +
             "runner script and automatically prepended to the classpath. " +
             "Use -n to not include it.")
+      opt[String]("jsHeader")
+        .action { (jsHeader, c) => c.copy(jsHeader = jsHeader)}
+        .text("A header that will be added at the top of generated .js files")
       opt[Unit]('d', "debug")
         .action { (_, c) => c.copy(logLevel = Level.Debug) }
         .text("Debug mode: Show full log")
@@ -216,6 +220,7 @@ object Scalajsld {
         .withClosureCompiler(options.fullOpt)
         .withPrettyPrint(options.prettyPrint)
         .withBatchMode(true)
+        .withJSHeader(options.jsHeader)
 
       val linker = StandardImpl.linker(config)
       val logger = new ScalaConsoleLogger(options.logLevel)
