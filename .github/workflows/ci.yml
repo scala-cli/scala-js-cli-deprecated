@@ -28,6 +28,7 @@ jobs:
         run: ./scripts/test-cli.sh "${{ matrix.scalajsversion }}" "${{ matrix.scalaversion }}"
   publish:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
       - uses: olafurpg/setup-scala@v10
