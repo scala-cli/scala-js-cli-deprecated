@@ -27,6 +27,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import java.io.File
 import java.net.URI
 import java.nio.file.Path
+import org.scalajs.cli.internal.ModuleSplitStyleParser
 
 object Scalajsld {
 
@@ -75,18 +76,8 @@ object Scalajsld {
   private object ModuleSplitStyleRead {
     val All = List(ModuleSplitStyle.FewestModules.toString, ModuleSplitStyle.SmallestModules.toString, "SmallModulesFor")
 
-    def moduleSplitStyleRead(splitStyle: String, modulePackages: Seq[String]): ModuleSplitStyle = {
-        if (splitStyle == ModuleSplitStyle.FewestModules.toString)
-          ModuleSplitStyle.FewestModules
-        else if (splitStyle == ModuleSplitStyle.SmallestModules.toString)
-          ModuleSplitStyle.SmallestModules
-        else if (splitStyle == "SmallModulesFor") {
-          if(modulePackages.isEmpty)
-            throw new IllegalArgumentException(s"SmallModuleFor style must have at least one package. To define it pass `--smallModuleForPackages` parameter.")
-          ModuleSplitStyle.SmallModulesFor(modulePackages.toList)
-        } else
-          throw new IllegalArgumentException(s"$splitStyle is not a valid module split style")
-    }
+    def moduleSplitStyleRead(splitStyle: String, modulePackages: Seq[String]): ModuleSplitStyle =
+      (new ModuleSplitStyleParser).parse(splitStyle, modulePackages.toArray).underlying
   }
 
   def main(args: Array[String]): Unit = {
