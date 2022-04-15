@@ -77,7 +77,7 @@ object Scalajsld {
     val All = List(ModuleSplitStyle.FewestModules.toString, ModuleSplitStyle.SmallestModules.toString, "SmallModulesFor")
 
     def moduleSplitStyleRead(splitStyle: String, modulePackages: Seq[String]): ModuleSplitStyle =
-      (new ModuleSplitStyleParser).parse(splitStyle, modulePackages)
+      (new ModuleSplitStyleParser).parse(splitStyle, modulePackages.toArray)
   }
 
   def main(args: Array[String]): Unit = {

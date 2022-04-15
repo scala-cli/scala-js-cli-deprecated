@@ -4,7 +4,7 @@ import org.scalajs.linker.interface.ModuleSplitStyle
 
 // class rather than object, as that's easier to substitute from native-image
 class ModuleSplitStyleParser {
-  def parse(splitStyle: String, modulePackages: Seq[String]): ModuleSplitStyle =
+  def parse(splitStyle: String, modulePackages: Array[String]): ModuleSplitStyle =
     (new ModuleSplitStyleParserPre110).tryParse(splitStyle).getOrElse {
       if (splitStyle == "SmallModulesFor") {
         if (modulePackages.isEmpty)

@@ -11,7 +11,7 @@ class ModuleSplitStyleParserPre110 {
       Some(ModuleSplitStyle.SmallestModules)
     else
       None
-  def parse(splitStyle: String, modulePackages: Seq[String]): ModuleSplitStyle =
+  def parse(splitStyle: String, modulePackages: Array[String]): ModuleSplitStyle =
     tryParse(splitStyle).getOrElse {
       if (splitStyle == "SmallModulesFor")
         throw new IllegalArgumentException(s"SmallModuleFor style not supported for Scala.js < 1.10")
