@@ -18,7 +18,7 @@ inThisBuild(Def.settings(
   scalaVersion := crossScalaVersions.value.last,
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
 
-  scalaJSVersion := "1.7.1",
+  scalaJSVersion := "1.10.0",
 
   scalaJSScalaVersions := Seq(
     "2.11.12",
@@ -85,7 +85,7 @@ lazy val `scalajs-cli`: Project = project.in(file(".")).
 
     libraryDependencies ++= Seq(
       "org.scala-js" %% "scalajs-linker" % scalaJSVersion.value,
-      "com.github.scopt" %% "scopt" % "3.7.1",
+      "com.github.scopt" %% "scopt" % "4.0.1",
     ),
 
     // assembly options

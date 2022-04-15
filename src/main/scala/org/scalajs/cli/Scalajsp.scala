@@ -58,7 +58,7 @@ object Scalajsp {
         .abbr("h")
         .text("prints this usage text")
 
-      override def showUsageOnError = true
+      override def showUsageOnError = Some(true)
     }
 
     for {
