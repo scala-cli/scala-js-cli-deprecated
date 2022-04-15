@@ -195,7 +195,7 @@ object Scalajsld {
           success
       }
 
-      override def showUsageOnError = true
+      override def showUsageOnError = Some(true)
     }
 
     for (options <- parser.parse(args, Options())) {
