@@ -1,14 +1,14 @@
 package org.scalajs.cli.internal
 
-import org.scalajs.linker.interface.ModuleSplitStyle
+import org.scalajs.linker.interface.{ModuleSplitStyle => ActualModuleSplitStyle}
 
 // class rather than object, as that's easier to substitute from native-image
 class ModuleSplitStyleParserPre110 {
   def tryParse(splitStyle: String): Option[ModuleSplitStyle] =
-    if (splitStyle == ModuleSplitStyle.FewestModules.toString)
-      Some(ModuleSplitStyle.FewestModules)
-    else if (splitStyle == ModuleSplitStyle.SmallestModules.toString)
-      Some(ModuleSplitStyle.SmallestModules)
+    if (splitStyle == ActualModuleSplitStyle.FewestModules.toString)
+      Some(ModuleSplitStyle(ActualModuleSplitStyle.FewestModules))
+    else if (splitStyle == ActualModuleSplitStyle.SmallestModules.toString)
+      Some(ModuleSplitStyle(ActualModuleSplitStyle.SmallestModules))
     else
       None
   def parse(splitStyle: String, modulePackages: Array[String]): ModuleSplitStyle =
