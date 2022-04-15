@@ -38,7 +38,8 @@ object Scalajsld {
       semantics: Semantics = Semantics.Defaults,
       esFeatures: ESFeatures = ESFeatures.Defaults,
       moduleKind: ModuleKind = ModuleKind.NoModule,
-      moduleSplitStyle: ModuleSplitStyle = ModuleSplitStyle.FewestModules,
+      moduleSplitStyle: String = ModuleSplitStyle.FewestModules.toString,
+      smallModuleForPackages: Seq[String] = Seq.empty,
       outputPatterns: OutputPatterns = OutputPatterns.Defaults,
       noOpt: Boolean = false,
       fullOpt: Boolean = false,
@@ -71,12 +72,20 @@ object Scalajsld {
     }
   }
 
-  private implicit object ModuleSplitStyleRead extends scopt.Read[ModuleSplitStyle] {
-    val All = List(ModuleSplitStyle.FewestModules, ModuleSplitStyle.SmallestModules)
-    val arity = 1
-    val reads = { (s: String) =>
-      All.find(_.toString() == s).getOrElse(
-          throw new IllegalArgumentException(s"$s is not a valid module split style"))
+  private object ModuleSplitStyleRead {
+    val All = List(ModuleSplitStyle.FewestModules.toString, ModuleSplitStyle.SmallestModules.toString, "SmallModulesFor")
+
+    def moduleSplitStyleRead(splitStyle: String, modulePackages: Seq[String]): ModuleSplitStyle = {
+        if (splitStyle == ModuleSplitStyle.FewestModules.toString)
+          ModuleSplitStyle.FewestModules
+        else if (splitStyle == ModuleSplitStyle.SmallestModules.toString)
+          ModuleSplitStyle.SmallestModules
+        else if (splitStyle == "SmallModulesFor") {
+          if(modulePackages.isEmpty)
+            throw new IllegalArgumentException(s"SmallModuleFor style must have at least one package. To define it pass `--smallModuleForPackages` parameter.")
+          ModuleSplitStyle.SmallModulesFor(modulePackages.toList)
+        } else
+          throw new IllegalArgumentException(s"$splitStyle is not a valid module split style")
     }
   }
 
@@ -119,9 +128,13 @@ object Scalajsld {
       opt[Unit]('n', "noOpt")
         .action { (_, c) => c.copy(noOpt = true, fullOpt = false) }
         .text("Don't optimize code")
-      opt[ModuleSplitStyle]("moduleSplitStyle")
+      opt[String]("moduleSplitStyle")
         .action { (x, c) => c.copy(moduleSplitStyle = x) }
         .text("Module splitting style " + ModuleSplitStyleRead.All.mkString("(", ", ", ")"))
+      opt[Seq[String]]("smallModuleForPackages")
+        .valueName("<package1>,<package2>...")
+        .action((x, c) => c.copy(smallModuleForPackages = x))
+        .text("Create as many small modules as possible for the classes in the passed packages and their subpackages.")
       opt[String]("jsFilePattern")
         .action { (x, c) => c.copy(outputPatterns = OutputPatterns.fromJSFile(x)) }
         .text("Pattern for JS file names (default: `%s.js`). " +
@@ -205,11 +218,12 @@ object Scalajsld {
       val semantics =
         if (options.fullOpt) options.semantics.optimized
         else options.semantics
+      val moduleSplitStyle = ModuleSplitStyleRead.moduleSplitStyleRead(options.moduleSplitStyle, options.smallModuleForPackages)
 
       val config = StandardConfig()
         .withSemantics(semantics)
         .withModuleKind(options.moduleKind)
-        .withModuleSplitStyle(options.moduleSplitStyle)
+        .withModuleSplitStyle(moduleSplitStyle)
         .withOutputPatterns(options.outputPatterns)
         .withESFeatures(options.esFeatures)
         .withCheckIR(options.checkIR)
