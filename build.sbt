@@ -14,7 +14,7 @@ inThisBuild(Def.settings(
   organization := "io.github.alexarchambault.tmp",
   sonatypeCredentialHost := "s01.oss.sonatype.org",
 
-  crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.6"),
+  crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.8"),
   scalaVersion := crossScalaVersions.value.last,
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
 
