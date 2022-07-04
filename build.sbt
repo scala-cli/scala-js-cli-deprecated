@@ -85,7 +85,7 @@ lazy val `scalajs-cli`: Project = project.in(file(".")).
 
     libraryDependencies ++= Seq(
       "org.scala-js" %% "scalajs-linker" % scalaJSVersion.value,
-      "com.github.scopt" %% "scopt" % "4.0.1",
+      "com.github.scopt" %% "scopt" % "4.1.0",
     ),
 
     // assembly options
