@@ -18,8 +18,6 @@ import org.scalajs.linker.interface._
 
 import CheckedBehavior.Compliant
 
-import scala.collection.immutable.Seq
-
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,6 +25,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import java.io.File
 import java.net.URI
 import java.nio.file.Path
+import java.lang.NoClassDefFoundError
 import org.scalajs.cli.internal.ModuleSplitStyleParser
 
 object Scalajsld {
@@ -77,7 +76,13 @@ object Scalajsld {
     val All = List(ModuleSplitStyle.FewestModules.toString, ModuleSplitStyle.SmallestModules.toString, "SmallModulesFor")
 
     def moduleSplitStyleRead(splitStyle: String, modulePackages: Seq[String]): ModuleSplitStyle =
-      (new ModuleSplitStyleParser).parse(splitStyle, modulePackages.toArray).underlying
+      try {
+        (new ModuleSplitStyleParser).parse(splitStyle, modulePackages.toArray).underlying
+      }
+      catch {
+        case e: NoClassDefFoundError =>
+          throw new IllegalArgumentException(s"$splitStyle is not a valid module split style", e.getCause)
+      }
   }
 
   def main(args: Array[String]): Unit = {
