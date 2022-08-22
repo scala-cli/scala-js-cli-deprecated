@@ -24,6 +24,6 @@ case $BASEVER in
 esac
 
 # Base Scala.js project directory.
-TRG_BASE="$(realpath $(dirname $0)/../pack)"
+TRG_BASE="$(realpath $(dirname $0)/../cli/pack)"
 
 SJS_ARTIFACT_NAME=scalajs_$BINVER-$SCALAJS_VER

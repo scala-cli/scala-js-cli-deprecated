@@ -3,7 +3,7 @@ package org.scalajs.cli.internal
 import org.scalajs.linker.interface.{ModuleSplitStyle => ActualModuleSplitStyle}
 
 // class rather than object, as that's easier to substitute from native-image
-class ModuleSplitStyleParser190Minus {
+class ModuleSplitStyleParser {
   def tryParse(splitStyle: String): Option[ModuleSplitStyle] =
     if (splitStyle == ActualModuleSplitStyle.FewestModules.toString)
       Some(ModuleSplitStyle(ActualModuleSplitStyle.FewestModules))

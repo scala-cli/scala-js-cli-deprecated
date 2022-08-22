@@ -79,7 +79,7 @@ val commonSettings = Def.settings(
   sonatypeProfileName := "io.github.alexarchambault"
 )
 
-lazy val `scalajs-cli`: Project = project.in(file(".")).
+lazy val `scalajs-cli`: Project = project.in(file("cli")).
   settings(
     commonSettings,
 
@@ -88,7 +88,9 @@ lazy val `scalajs-cli`: Project = project.in(file(".")).
       "com.github.scopt" %% "scopt" % "4.1.0",
     ),
 
-    // assembly options
+    Compile / unmanagedSourceDirectories += baseDirectory.value / "scala-js-1.10+",
+
+      // assembly options
     assembly / mainClass := None, // don't want an executable JAR
     assembly / assemblyOption ~= { _.copy(includeScala = false) },
     assembly / assemblyJarName :=

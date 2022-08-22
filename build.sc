@@ -12,16 +12,27 @@ import coursier.core.Version
 def scalaJsCliVersion = "1.1.1-sc5"
 def scalaJsVersions = Seq("1.9.0", "1.10.0", "1.10.1")
 
-class ScalaJsCliNativeImage(val scalaJsVersion0: String) extends ScalaModule with NativeImage {
+class ScalaJsCli(val scalaJsVersion0: String) extends ScalaModule {
   def scalaVersion = "2.13.8"
-  def scalaJsVersion = scalaJsVersion0
+  def ivyDeps = super.ivyDeps() ++ Seq(
+    ivy"org.scala-js::scalajs-linker:$scalaJsVersion0",
+    ivy"com.github.scopt::scopt:4.1.0"
+  )
+  def millSourcePath   = super.millSourcePath / os.up / "cli"
+
+  def mainClass = Some("org.scalajs.cli.Scalajsld")
 
   def sources = T.sources {
     val extra =
-      if (Version(scalaJsVersion) < Version("1.10")) Nil
-      else Seq(PathRef(os.pwd / "scala-js-1.10+" / "src"))
-    super.sources() ++ extra
+      if (Version(scalaJsVersion0) == Version("1.9.0")) millSourcePath / "scala-js-1.9"
+      else millSourcePath / "scala-js-1.10+"
+    super.sources() ++ Seq(PathRef(extra))
   }
+}
+
+class ScalaJsCliNativeImage(val scalaJsVersion0: String) extends ScalaModule with NativeImage {
+  def scalaVersion = "2.13.8"
+  def scalaJsVersion = scalaJsVersion0
 
   def nativeImageClassPath = T{
     runClasspath()
@@ -38,11 +49,8 @@ class ScalaJsCliNativeImage(val scalaJsVersion0: String) extends ScalaModule wit
   def graalVmVersion = "22.1.0"
   def nativeImageGraalVmJvmId = s"graalvm-java17:$graalVmVersion"
   def nativeImageName = "scala-js-ld"
-  def ivyDeps = super.ivyDeps() ++ Seq(
-    ivy"io.github.alexarchambault.tmp::scalajs-cli:$scalaJsCliVersion"
-      // so that this doesn't bump the version we pull ourselves
-      .exclude(("org.scala-js", "scalajs-linker_2.13")),
-    ivy"org.scala-js::scalajs-linker:$scalaJsVersion"
+  def moduleDeps() = Seq(
+    new ScalaJsCli(scalaJsVersion0)
   )
   def compileIvyDeps = super.compileIvyDeps() ++ Seq(
     ivy"org.graalvm.nativeimage:svm:$graalVmVersion"
